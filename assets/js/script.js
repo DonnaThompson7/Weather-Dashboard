@@ -11,7 +11,6 @@ var formSubmitHandler = function (event) {
   event.preventDefault();
 
   var cityName = cityInputEl.value.trim();
-
   if (cityName) {
     getCityCoordinates(cityName);
     
@@ -46,7 +45,6 @@ var getCityCoordinates = function (city) {
 
 var getCityWeather = function (latitude, longitude) {
     var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&appid=fc2784c2f5d886b20ace6fa5f1271854' + '&units=imperial';
-// var apiUrl = 'https://api.github.com/users/DonnaThompson7/repos';
 
   fetch(apiUrl)
     .then(function (response) {
@@ -55,7 +53,8 @@ var getCityWeather = function (latitude, longitude) {
         response.json().then(function (data) {
             console.log(data);
             console.log(data.city.name);
-            display5DayForecast(data.list, data.city.name);
+            displayCityWeather(data.list, data.city.name);
+            display5DayForecast(data.list);
         });
       } else {
         alert('Error: ' + response.statusText);
@@ -66,10 +65,10 @@ var getCityWeather = function (latitude, longitude) {
     });
 };
 
-var display5DayForecast = function (forecastData, nameOfCity) {
+var displayCityWeather = function (forecastData, nameOfCity) {
     if (forecastData.length === 0) {
-      cityWeatherEl.textContent = 'No forecast found.';
-      return;
+        cityWeatherEl.textContent = 'No forecast found.';
+        return;
     }
     // Display the city and current date
     var currentDate = dayjs();
@@ -83,14 +82,53 @@ var display5DayForecast = function (forecastData, nameOfCity) {
     var cityWindEl = document.createElement('span');
     var cityHumidityEl = document.createElement('span');
     //??what is symbol for degrees
-    //??how to put these in a column
     cityTempEl.textContent = "Temp: " + forecastData[0].main.temp + " F";
     cityWindEl.textContent = "Wind: " + forecastData[0].wind.speed + " MPH";
     cityHumidityEl.textContent = "Humidity: " + forecastData[0].main.humidity + " %";
     cityWeatherEl.appendChild(cityTempEl);
     cityWeatherEl.appendChild(cityWindEl);
     cityWeatherEl.appendChild(cityHumidityEl);
+};
 
+var display5DayForecast = function (forecastData) {
+    if (forecastData.length === 0) {
+        fiveDayForecastEl.textContent = 'No 5-day forecast found.';
+      return;
+    }
+    // Display 5 day forecast
+    for (var i = 1; i < 6; i++) {
+
+        //build card for 1 day
+        var tempCardEl = document.createElement('div');
+        tempCardEl.setAttribute('class', 'flex-column');
+
+            //??convert date or add 1 to current date from dayjs
+            var tempDate = document.createElement('span');
+            tempDate.textContent = 'XX/XX/XXXX';
+            tempCardEl.appendChild(tempDate);
+
+            //get weather icon
+            var iconcode = forecastData[i].weather[0].icon;
+            var iconurl = "http://openweathermap.org/img/w/" + iconcode + ".png";
+            var tempWeatherIconEl = document.createElement('img');
+            tempWeatherIconEl.setAttribute('src', iconurl);
+            tempCardEl.appendChild(tempWeatherIconEl);
+
+            var tempCityTempEl = document.createElement('span');
+            var tempCityWindEl = document.createElement('span');
+            var tempCityHumidityEl = document.createElement('span');
+            //??what is symbol for degrees
+            //??how to put these in a column
+            tempCityTempEl.textContent = "Temp: " + forecastData[i].main.temp + " F";
+            tempCityWindEl.textContent = "Wind: " + forecastData[i].wind.speed + " MPH";
+            tempCityHumidityEl.textContent = "Humidity: " + forecastData[i].main.humidity + " %";
+            tempCardEl.appendChild(tempCityTempEl);
+            tempCardEl.appendChild(tempCityWindEl);
+            tempCardEl.appendChild(tempCityHumidityEl);
+
+            fiveDayForecastEl.appendChild(tempCardEl);
+
+    }
 };
 
 userFormEl.addEventListener('submit', formSubmitHandler);
