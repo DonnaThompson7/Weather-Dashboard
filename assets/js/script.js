@@ -4,6 +4,7 @@ var savedCityContainerEl = document.querySelector('.saved-city-container');
 var cityWeatherEl = document.querySelector('.city-weather');
 var cityAndDateEl = document.querySelector('#city-and-date');
 var fiveDayForecastEl = document.querySelector('#five-day-forecast');
+var savedCityNames;
 
 //TODO: Switch alerts to modal
 
@@ -12,8 +13,6 @@ var formSubmitHandler = function (event) {
   var cityName = cityInputEl.value.trim();
   if (cityName) {
     getCityCoordinates(cityName);
-    //this needs to be changed? to not textContent
-    //savedCityContainerEl.textContent = '';
     cityInputEl.value = '';
   } else {
     cityInputEl.placeholder = 'Please enter a city name';
@@ -64,12 +63,7 @@ var getCityWeather = function (latitude, longitude) {
 
 var addCityToSearchHistory = function(cityToSave) {
     //get saved cities from local storage
-    var savedCityNames = JSON.parse(window.localStorage.getItem("savedCities"));
-    if (savedCityNames === null) {
-        savedCityNames = []
-    }
-    console.log('getItem: ' + savedCityNames);
-    
+    getSavedCities();
     if (savedCityNames.includes(cityToSave)) {
         return;
     } else {
@@ -87,8 +81,7 @@ var addCityToSearchHistory = function(cityToSave) {
             } else {
                 savedCityNames.push(cityToSave);
                 }
-            window.localStorage.setItem("savedCities", JSON.stringify(savedCityNames));
-            console.log('setItem: ' + savedCityNames);
+            setSavedCities();
     }
 };
 
@@ -126,7 +119,6 @@ var display5DayForecast = function (forecastData) {
         fiveDayForecastEl.textContent = 'No 5-day forecast found.';
       return;
     }
-
     fiveDayForecastEl.innerHTML = "";
 
     // Display 5 day forecast
@@ -163,6 +155,29 @@ var display5DayForecast = function (forecastData) {
             fiveDayForecastEl.appendChild(tempCardEl);
     }
 };
+
+function setSavedCities() {
+    window.localStorage.setItem("savedCities", JSON.stringify(savedCityNames));
+}
+
+function getSavedCities() {
+    savedCityNames = JSON.parse(window.localStorage.getItem("savedCities"));
+    if (savedCityNames === null) {
+        savedCityNames = []
+    }
+    console.log('getItem: ' + savedCityNames);   
+}
+
+function init() {
+    //clear saved cities in local storage
+        //set var to empty array
+        savedCityNames = [];
+        //set in local storage to empty array
+        setSavedCities();
+   
+}
+  
+init();
 
 userFormEl.addEventListener('submit', formSubmitHandler);
 
