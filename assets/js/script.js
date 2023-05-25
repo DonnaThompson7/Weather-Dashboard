@@ -126,7 +126,7 @@ var display5DayForecast = function (forecastData) {
 
         //build card for 1 day
         var tempCardEl = document.createElement('div');
-        tempCardEl.setAttribute('class', 'flex-column');
+        tempCardEl.setAttribute('class', 'flex-column list-item');
 
             //TODO:??convert date or add 1 to current date from dayjs
             var tempDate = document.createElement('span');

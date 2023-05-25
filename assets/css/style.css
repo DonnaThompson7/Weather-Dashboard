@@ -101,14 +101,29 @@
     max-width: 75%;
   }
   
+  .city-weather {
+    margin: 0 0 20px 0;
+    border: 2px solid black;
+    border-radius: .3rem;
+    padding: 2.5%;
+  }
+ 
+  .list-item {
+    margin: 10px;
+    border: 2px solid black;
+    border-radius: .3rem;
+    padding: 2.5%;
+    background-color: darkslategrey;
+    color: white;
+  }
+
   /* CARDS */
 .card {
     margin: 0 0 20px 0;
     /* border: 3px solid black; */
     border-radius: .3rem;
   }
-  
-  
+   
   .card-header {
     color: black;
     background-color: white;
