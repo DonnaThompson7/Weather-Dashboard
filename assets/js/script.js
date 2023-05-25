@@ -40,7 +40,31 @@ var getCityCoordinates = function (city) {
 };
 
 var getCityWeather = function (latitude, longitude) {
+    // var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&appid=fc2784c2f5d886b20ace6fa5f1271854' + '&units=imperial';
+    var apiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&appid=fc2784c2f5d886b20ace6fa5f1271854' + '&units=imperial';
+
+    fetch(apiUrl)
+        .then(function (response) {
+            console.log(response);
+        if (response.ok) {
+            response.json().then(function (data) {
+                console.log(data);
+                console.log(data.name);
+                displayCityWeather(data, data.name);
+                getFiveDayForecast(latitude, longitude);
+            });
+        } else {
+            alert('Switch this to modal! Error: ' + response.statusText);
+        }
+        })
+        .catch(function (error) {
+        alert('Switch this to modal! Unable to get 5-day forecast');
+        });
+};
+
+var getFiveDayForecast = function (latitude, longitude) {
     var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&appid=fc2784c2f5d886b20ace6fa5f1271854' + '&units=imperial';
+
     fetch(apiUrl)
         .then(function (response) {
             console.log(response);
@@ -48,7 +72,6 @@ var getCityWeather = function (latitude, longitude) {
             response.json().then(function (data) {
                 console.log(data);
                 console.log(data.city.name);
-                displayCityWeather(data.list, data.city.name);
                 display5DayForecast(data.list);
                 addCityToSearchHistory(data.city.name);
             });
@@ -60,6 +83,8 @@ var getCityWeather = function (latitude, longitude) {
         alert('Switch this to modal! Unable to get 5-day forecast');
         });
 };
+
+
 
 var addCityToSearchHistory = function(cityToSave) {
     //get saved cities from local storage
@@ -86,7 +111,7 @@ var addCityToSearchHistory = function(cityToSave) {
 };
 
 var displayCityWeather = function (forecastData, nameOfCity) {
-    if (forecastData.length === 0) {
+    if (forecastData === null) {
         cityWeatherEl.textContent = 'No forecast found.';
         return;
     }
@@ -94,7 +119,7 @@ var displayCityWeather = function (forecastData, nameOfCity) {
     var currentDate = dayjs();
     
     //get weather icon
-    var iconcode = forecastData[0].weather[0].icon;
+    var iconcode = forecastData.weather[0].icon;
     var iconurl = "http://openweathermap.org/img/w/" + iconcode + ".png";
 
     //display city, date, & weather icon
@@ -106,13 +131,14 @@ var displayCityWeather = function (forecastData, nameOfCity) {
     var cityWindEl = document.createElement('span');
     var cityHumidityEl = document.createElement('span');
     //TODO: ??what is symbol for degrees
-    cityTempEl.textContent = "Temp: " + forecastData[0].main.temp + " F";
-    cityWindEl.textContent = "Wind: " + forecastData[0].wind.speed + " MPH";
-    cityHumidityEl.textContent = "Humidity: " + forecastData[0].main.humidity + " %";
+    cityTempEl.textContent = "Temp: " + forecastData.main.temp + " F";
+    cityWindEl.textContent = "Wind: " + forecastData.wind.speed + " MPH";
+    cityHumidityEl.textContent = "Humidity: " + forecastData.main.humidity + " %";
     cityWeatherEl.appendChild(cityTempEl);
     cityWeatherEl.appendChild(cityWindEl);
     cityWeatherEl.appendChild(cityHumidityEl);
 };
+
 
 var display5DayForecast = function (forecastData) {
     if (forecastData.length === 0) {
@@ -122,16 +148,19 @@ var display5DayForecast = function (forecastData) {
     fiveDayForecastEl.innerHTML = "";
 
     // Display 5 day forecast
-    for (var i = 1; i < 6; i++) {
+    for (var i = 0; i < 40; i += 8) {
 
         //build card for 1 day
         var tempCardEl = document.createElement('div');
         tempCardEl.setAttribute('class', 'flex-column list-item');
 
-            //TODO:??convert date or add 1 to current date from dayjs
+            //TODO:displayed date is not accurate
             var tempDate = document.createElement('span');
-            tempDate.textContent = 'XX/XX/XXXX';
+            // tempDate.textContent = dayjs.unix(forecastData[i].dt).format('MM/DD/YYYY');
+            tempDate.textContent = forecastData[i].dt_txt;
+            console.log(forecastData[i].dt_txt)
             tempCardEl.appendChild(tempDate);
+
 
             //get weather icon
             var iconcode = forecastData[i].weather[0].icon;
@@ -144,7 +173,6 @@ var display5DayForecast = function (forecastData) {
             var tempCityWindEl = document.createElement('span');
             var tempCityHumidityEl = document.createElement('span');
             //TODO: ??what is symbol for degrees
-            //TODO: ??how to separate these 5 things
             tempCityTempEl.textContent = "Temp: " + forecastData[i].main.temp + " F";
             tempCityWindEl.textContent = "Wind: " + forecastData[i].wind.speed + " MPH";
             tempCityHumidityEl.textContent = "Humidity: " + forecastData[i].main.humidity + " %";
