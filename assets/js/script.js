@@ -63,9 +63,17 @@ var getCityWeather = function (latitude, longitude) {
 };
 
 var addCityToSearchHistory = function(cityToSave) {
-    //TODO: 
     //get saved cities from local storage
-    //if city not already saved:
+    var savedCityNames = JSON.parse(window.localStorage.getItem("savedCities"));
+    if (savedCityNames === null) {
+        savedCityNames = []
+    }
+    console.log('getItem: ' + savedCityNames);
+    
+    if (savedCityNames.includes(cityToSave)) {
+        return;
+    } else {
+        //city is not already saved:
             var cityButton = document.createElement('button');
             cityButton.setAttribute('class', "btn saved-city");
             cityButton.textContent = cityToSave;
@@ -73,7 +81,15 @@ var addCityToSearchHistory = function(cityToSave) {
                 getCityCoordinates(cityButton.textContent);
                 });
             savedCityContainerEl.appendChild(cityButton);
-            //TODO: add city to local storage
+            //add city to local storage
+            if (savedCityNames === null) {
+                savedCityNames = cityToSave;
+            } else {
+                savedCityNames.push(cityToSave);
+                }
+            window.localStorage.setItem("savedCities", JSON.stringify(savedCityNames));
+            console.log('setItem: ' + savedCityNames);
+    }
 };
 
 var displayCityWeather = function (forecastData, nameOfCity) {
@@ -81,7 +97,6 @@ var displayCityWeather = function (forecastData, nameOfCity) {
         cityWeatherEl.textContent = 'No forecast found.';
         return;
     }
-    
     // Get current date
     var currentDate = dayjs();
     
