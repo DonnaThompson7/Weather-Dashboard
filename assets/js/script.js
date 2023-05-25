@@ -62,54 +62,6 @@ var getCityWeather = function (latitude, longitude) {
         });
 };
 
-var getFiveDayForecast = function (latitude, longitude) {
-    var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&appid=fc2784c2f5d886b20ace6fa5f1271854' + '&units=imperial';
-
-    fetch(apiUrl)
-        .then(function (response) {
-            console.log(response);
-        if (response.ok) {
-            response.json().then(function (data) {
-                console.log(data);
-                console.log(data.city.name);
-                display5DayForecast(data.list);
-                addCityToSearchHistory(data.city.name);
-            });
-        } else {
-            alert('Switch this to modal! Error: ' + response.statusText);
-        }
-        })
-        .catch(function (error) {
-        alert('Switch this to modal! Unable to get 5-day forecast');
-        });
-};
-
-
-
-var addCityToSearchHistory = function(cityToSave) {
-    //get saved cities from local storage
-    getSavedCities();
-    if (savedCityNames.includes(cityToSave)) {
-        return;
-    } else {
-        //city is not already saved:
-            var cityButton = document.createElement('button');
-            cityButton.setAttribute('class', "btn saved-city");
-            cityButton.textContent = cityToSave;
-            cityButton.addEventListener('click', function() {
-                getCityCoordinates(cityButton.textContent);
-                });
-            savedCityContainerEl.appendChild(cityButton);
-            //add city to local storage
-            if (savedCityNames === null) {
-                savedCityNames = cityToSave;
-            } else {
-                savedCityNames.push(cityToSave);
-                }
-            setSavedCities();
-    }
-};
-
 var displayCityWeather = function (forecastData, nameOfCity) {
     if (forecastData === null) {
         cityWeatherEl.textContent = 'No forecast found.';
@@ -139,6 +91,27 @@ var displayCityWeather = function (forecastData, nameOfCity) {
     cityWeatherEl.appendChild(cityHumidityEl);
 };
 
+var getFiveDayForecast = function (latitude, longitude) {
+    var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&appid=fc2784c2f5d886b20ace6fa5f1271854' + '&units=imperial';
+
+    fetch(apiUrl)
+        .then(function (response) {
+            console.log(response);
+        if (response.ok) {
+            response.json().then(function (data) {
+                console.log(data);
+                console.log(data.city.name);
+                display5DayForecast(data.list);
+                addCityToSearchHistory(data.city.name);
+            });
+        } else {
+            alert('Switch this to modal! Error: ' + response.statusText);
+        }
+        })
+        .catch(function (error) {
+        alert('Switch this to modal! Unable to get 5-day forecast');
+        });
+};
 
 var display5DayForecast = function (forecastData) {
     if (forecastData.length === 0) {
@@ -154,13 +127,10 @@ var display5DayForecast = function (forecastData) {
         var tempCardEl = document.createElement('div');
         tempCardEl.setAttribute('class', 'flex-column list-item');
 
-            //TODO:displayed date is not accurate
+            //format and display forecast date
             var tempDate = document.createElement('span');
-            // tempDate.textContent = dayjs.unix(forecastData[i].dt).format('MM/DD/YYYY');
-            tempDate.textContent = forecastData[i].dt_txt;
-            console.log(forecastData[i].dt_txt)
+            tempDate.textContent = dayjs(forecastData[i].dt_txt).format('MM/DD/YYYY');
             tempCardEl.appendChild(tempDate);
-
 
             //get weather icon
             var iconcode = forecastData[i].weather[0].icon;
@@ -184,6 +154,31 @@ var display5DayForecast = function (forecastData) {
     }
 };
 
+
+var addCityToSearchHistory = function(cityToSave) {
+    //get saved cities from local storage
+    getSavedCities();
+    if (savedCityNames.includes(cityToSave)) {
+        return;
+    } else {
+        //city is not already saved:
+            var cityButton = document.createElement('button');
+            cityButton.setAttribute('class', "btn saved-city");
+            cityButton.textContent = cityToSave;
+            cityButton.addEventListener('click', function() {
+                getCityCoordinates(cityButton.textContent);
+                });
+            savedCityContainerEl.appendChild(cityButton);
+            //add city to local storage
+            if (savedCityNames === null) {
+                savedCityNames = cityToSave;
+            } else {
+                savedCityNames.push(cityToSave);
+                }
+            setSavedCities();
+    }
+};
+
 function setSavedCities() {
     window.localStorage.setItem("savedCities", JSON.stringify(savedCityNames));
 }
@@ -202,7 +197,6 @@ function init() {
         savedCityNames = [];
         //set in local storage to empty array
         setSavedCities();
-   
 }
   
 init();
