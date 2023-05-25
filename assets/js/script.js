@@ -6,7 +6,6 @@ var cityAndDateEl = document.querySelector('#city-and-date');
 var weatherIconEl = document.querySelector('#wicon');
 var fiveDayForecastEl = document.querySelector('#five-day-forecast');
 
-
 var formSubmitHandler = function (event) {
   event.preventDefault();
 
@@ -15,13 +14,12 @@ var formSubmitHandler = function (event) {
     getCityCoordinates(cityName);
     
     //this needs to be changed? to not textContent
-    // savedCityContainerEl.textContent = '';
+    //savedCityContainerEl.textContent = '';
     cityInputEl.value = '';
   } else {
     cityInputEl.placeholder = 'Please enter a city name';
   }
 };
-
 
 var getCityCoordinates = function (city) {
     var apiUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + city + '&limit=5&appid=fc2784c2f5d886b20ace6fa5f1271854';
@@ -88,6 +86,9 @@ var displayCityWeather = function (forecastData, nameOfCity) {
     cityWeatherEl.appendChild(cityTempEl);
     cityWeatherEl.appendChild(cityWindEl);
     cityWeatherEl.appendChild(cityHumidityEl);
+
+    //TODO: add city to the search history/local storage
+
 };
 
 var display5DayForecast = function (forecastData) {
@@ -127,8 +128,8 @@ var display5DayForecast = function (forecastData) {
             tempCardEl.appendChild(tempCityHumidityEl);
 
             fiveDayForecastEl.appendChild(tempCardEl);
-
     }
 };
 
 userFormEl.addEventListener('submit', formSubmitHandler);
+
