@@ -6,10 +6,9 @@ var cityAndDateEl = document.querySelector('#city-and-date');
 var fiveDayForecastEl = document.querySelector('#five-day-forecast');
 var savedCityNames;
 
-//TODO: Switch alerts to modal
-
 var formSubmitHandler = function (event) {
   event.preventDefault();
+  cityWeatherEl.style.display = "flex";
   var cityName = cityInputEl.value.trim();
   if (cityName) {
     getCityCoordinates(cityName);
@@ -27,7 +26,6 @@ var getCityCoordinates = function (city) {
       if (response.ok) {
         response.json().then(function (data) {
             console.log(data);
-            console.log(data[0].lat);
             getCityWeather(data[0].lat,data[0].lon);
         });
       } else {
@@ -49,7 +47,6 @@ var getCityWeather = function (latitude, longitude) {
         if (response.ok) {
             response.json().then(function (data) {
                 console.log(data);
-                console.log(data.name);
                 displayCityWeather(data, data.name);
                 getFiveDayForecast(latitude, longitude);
             });
@@ -100,7 +97,6 @@ var getFiveDayForecast = function (latitude, longitude) {
         if (response.ok) {
             response.json().then(function (data) {
                 console.log(data);
-                console.log(data.city.name);
                 display5DayForecast(data.list);
                 addCityToSearchHistory(data.city.name);
             });
@@ -154,7 +150,6 @@ var display5DayForecast = function (forecastData) {
     }
 };
 
-
 var addCityToSearchHistory = function(cityToSave) {
     //get saved cities from local storage
     getSavedCities();
@@ -188,7 +183,6 @@ function getSavedCities() {
     if (savedCityNames === null) {
         savedCityNames = []
     }
-    console.log('getItem: ' + savedCityNames);   
 }
 
 function init() {
@@ -197,6 +191,8 @@ function init() {
         savedCityNames = [];
         //set in local storage to empty array
         setSavedCities();
+    cityWeatherEl.style.display = "none";
+    cityInputEl.placeholder = 'Please enter a city name';
 }
   
 init();

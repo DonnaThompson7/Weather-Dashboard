@@ -86,6 +86,10 @@
     max-width: 75%;
   }
   
+  .app-title {
+    text-align: center;
+  }
+
   .city-weather {
     margin: 20px;
     border: 2px solid black;
