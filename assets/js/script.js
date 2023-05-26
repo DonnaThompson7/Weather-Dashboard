@@ -5,6 +5,7 @@ var cityWeatherEl = document.querySelector('.city-weather');
 var cityAndDateEl = document.querySelector('#city-and-date');
 var fiveDayForecastEl = document.querySelector('#five-day-forecast');
 var savedCityNames;
+var degreesSymbol = '\u00B0';
 
 var formSubmitHandler = function (event) {
   event.preventDefault();
@@ -29,11 +30,11 @@ var getCityCoordinates = function (city) {
             getCityWeather(data[0].lat,data[0].lon);
         });
       } else {
-        alert('Switch this to modal! Error: ' + response.statusText);
+        alert('Error: ' + response.statusText);
       }
     })
     .catch(function (error) {
-      alert('Switch this to modal! Unable to get city coordinates');
+      alert('Unable to get city coordinates');
     });
 };
 
@@ -51,11 +52,11 @@ var getCityWeather = function (latitude, longitude) {
                 getFiveDayForecast(latitude, longitude);
             });
         } else {
-            alert('Switch this to modal! Error: ' + response.statusText);
+            alert('Error: ' + response.statusText);
         }
         })
         .catch(function (error) {
-        alert('Switch this to modal! Unable to get 5-day forecast');
+        alert('Unable to get 5-day forecast');
         });
 };
 
@@ -79,8 +80,7 @@ var displayCityWeather = function (forecastData, nameOfCity) {
     var cityTempEl = document.createElement('span');
     var cityWindEl = document.createElement('span');
     var cityHumidityEl = document.createElement('span');
-    //TODO: ??what is symbol for degrees
-    cityTempEl.textContent = "Temp: " + forecastData.main.temp + " F";
+    cityTempEl.textContent = "Temp: " + forecastData.main.temp + " " + degreesSymbol + "F";
     cityWindEl.textContent = "Wind: " + forecastData.wind.speed + " MPH";
     cityHumidityEl.textContent = "Humidity: " + forecastData.main.humidity + " %";
     cityWeatherEl.appendChild(cityTempEl);
@@ -101,11 +101,11 @@ var getFiveDayForecast = function (latitude, longitude) {
                 addCityToSearchHistory(data.city.name);
             });
         } else {
-            alert('Switch this to modal! Error: ' + response.statusText);
+            alert('Error: ' + response.statusText);
         }
         })
         .catch(function (error) {
-        alert('Switch this to modal! Unable to get 5-day forecast');
+        alert('Unable to get 5-day forecast');
         });
 };
 
@@ -138,8 +138,7 @@ var display5DayForecast = function (forecastData) {
             var tempCityTempEl = document.createElement('span');
             var tempCityWindEl = document.createElement('span');
             var tempCityHumidityEl = document.createElement('span');
-            //TODO: ??what is symbol for degrees
-            tempCityTempEl.textContent = "Temp: " + forecastData[i].main.temp + " F";
+            tempCityTempEl.textContent = "Temp: " + forecastData[i].main.temp + " " + degreesSymbol + "F";
             tempCityWindEl.textContent = "Wind: " + forecastData[i].wind.speed + " MPH";
             tempCityHumidityEl.textContent = "Humidity: " + forecastData[i].main.humidity + " %";
             tempCardEl.appendChild(tempCityTempEl);
