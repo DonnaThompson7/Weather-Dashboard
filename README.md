@@ -2,7 +2,7 @@
 
 ## Overview:
 * Developer: Donna Thompson
-* Challenge: Develop a weather dashboard application that allows a user to enter a city name and to receive the current weather and 5-day forecast for that city.
+* Challenge: Develop a weather dashboard application that allows a user to view the current weather and 5-day forecast for multiple cities, using Server-Side APIs.
 
 <br/>
 

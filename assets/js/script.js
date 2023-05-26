@@ -186,7 +186,6 @@ function getSavedCities() {
 
 function init() {
     //clear saved cities in local storage
-        //set var to empty array
         savedCityNames = [];
         //set in local storage to empty array
         setSavedCities();
